@@ -9,52 +9,48 @@ using namespace std;
 using namespace std::chrono;
 
 int knapsack(int capacity, const std::vector<int>& values, const std::vector<int>& weights){
-	std::vector<int> m_prev (capacity + 1, 0);
-	std::vector<int> m_curr (capacity + 1, 0);
-//	std::vector< std::vector<int> > n (values.size(), std::vector<int>(capacity + 1, 0));
+	//Solo un arreglo de ganancia por peso, iteramos al reves para saber valores anteriores
+	std::vector<int> m_profit (capacity + 1, 0);
+	//vector<bool> es un "dynamic bitset" eficiente en espacio, para saber si esta o no el item
+	//std::vector< std::vector<bool> > m_keep (values.size(), std::vector<bool>(capacity + 1, false));
 	for(int i = 0; i < values.size(); i++){
-		for(int j = 1; j < capacity + 1; j++){
-			if (weights[i] > j){
-				m_curr[j] = m_prev[j];
-//				n[i][j] = 0;
-			} else {
-				if(m_prev[j-weights[i]] + values[i] >= m_prev[j]){
-				m_curr[j] = m_prev[j - weights[i]] + values[i];
-//				n[i][j] = 1;
-				} else {
-					m_curr[j] = m_prev[j];
-//					n[i][j] = 0;
-				}
+		int weight = weights[i];
+		for(int j = capacity; j >= weight; j--){
+			if(m_profit[j-weight] + values[i] >= m_profit[j]){
+				m_profit[j] = m_profit[j-weight] + values[i];
+				//m_keep[i][j] = true;
 			}
 		}
-		m_prev = m_curr;
-		m_curr = std::vector<int> (capacity + 1, 0);
 	}
-	int j = capacity;
-	std::vector<int> present (values.size(), 0);
-	int z = 0;
-//	for(int i = values.size() - 1; i >= 0; i--){
-//		present[i] = n[i][j];
-//		z += present[i] * values[i];
-//		if(present[i]){
-//			j -= weights[i];
-//		}
-//	}
-//	return z;
-	return m_prev[j];
+/*	int j = capacity;
+//	std::vector<int> kept();
+
+	for(int i = values.size() - 1; i >= 0; i--){
+		if(m_keep[i][j]){
+			//TEMP print: proximamente armar arreglo de items seleccionados
+			std::cout << i + 1 << ", ";
+			j -= weights[i];
+//            kept.push_back(i);
+		}
+	}
+	std::cout << std::endl;
+*/
+	return m_profit[capacity];
 }
+
 void split(const std::string &s, char delim, std::vector<std::string> &elems) {
-	    std::stringstream ss;
-	        ss.str(s);
-		    std::string item;
-		        while (std::getline(ss, item, delim)) {
-				        elems.push_back(item);
-					    }
+	std::stringstream ss;
+	ss.str(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
 }
+
 std::vector<std::string> split(const std::string &s, char delim) {
-	    std::vector<std::string> elems;
-	        split(s, delim, elems);
-		    return elems;
+	std::vector<std::string> elems;
+	split(s, delim, elems);
+	return elems;
 }
 
 void testFile(std::string filename){
@@ -62,7 +58,7 @@ void testFile(std::string filename){
 	std::ifstream file(filename.c_str());
 	int ok = 0;
 	for(int i = 0; i < 100; i++){
-	    	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+		high_resolution_clock::time_point t1 = high_resolution_clock::now();
 		int capacity = 0;
 		std::vector<int> values;
 		std::vector<int> weights;
@@ -92,7 +88,7 @@ void testFile(std::string filename){
 		int result =  knapsack(capacity,values, weights);
 		high_resolution_clock::time_point t2 = high_resolution_clock::now();
 		auto duration = duration_cast<milliseconds>( t2 - t1 ).count();
-		    
+			
 		std::cout << "time: " << duration << " ms"<< std::endl;
 		std::cout <<( (result == z)? "OK" : "FAILED" )<< std::endl;
 		if(result == z){
