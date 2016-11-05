@@ -3,7 +3,6 @@
 import abc
 from collections import deque
 
-
 class Path(object):
     """
     Clase abstracta para definir comportamiento identico
