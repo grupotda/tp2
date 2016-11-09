@@ -6,7 +6,7 @@ def select_projects(network, projects):
         Selecciona los proyectos y expertos que son solucion del problema y los
         imprime por consola.
         :param NetworkFlow: grafo que modela el problema
-        :param list: lista de nodos que son ademas proyectos
+        :param int: numero de nodos que son ademas proyectos
     """
     a = network.classify_vertices()[0]
     projects = set(range(1, projects + 1))
