@@ -3,8 +3,8 @@ import sys
 
 def select_projects(network, projects):
     """
-        Devuelve un set con los proyectos que deben ser seleccionados para
-        maximizar ganancias.
+        Selecciona los proyectos y expertos que son solucion del problema y los
+        imprime por consola.
         :param NetworkFlow: grafo que modela el problema
         :param list: lista de nodos que son ademas proyectos
     """
@@ -82,7 +82,7 @@ def read_file(file):
 if len(sys.argv) < 2 or len(sys.argv) > 2:
     print "Uso: project_selection.py <file>"
 else:
-    archivo = str(sys.argv[1])
-    specs = read_file("example")
+    f = str(sys.argv[1])
+    specs = read_file(f)
     network = build_network(specs)
     select_projects(network, specs["m"])
