@@ -1,4 +1,5 @@
 from NetworkFlow import NetworkFlow
+import sys
 
 def select_projects(network, projects):
     """
@@ -9,7 +10,9 @@ def select_projects(network, projects):
     """
     a = network.classify_vertices()[0]
     projects = set(range(1, projects + 1))
-    return a.intersection(projects)
+    a.remove(0)
+    print "Deben seleccionarse los proyectos:", ', '.join(str(p) for p in a.intersection(projects))
+    print "Para lo cual deben contratarse expertos en las areas:", ', '.join(str(e-len(projects)) for e in a - a.intersection(projects))
 
 def build_network(specs):
     """
@@ -76,7 +79,10 @@ def read_file(file):
 
     return specs
 
-# Prueba
-specs = read_file("example")
-network = build_network(specs)
-print select_projects(network, specs["m"])
+if len(sys.argv) < 2 or len(sys.argv) > 2:
+    print "Uso: project_selection.py <file>"
+else:
+    archivo = str(sys.argv[1])
+    specs = read_file("example")
+    network = build_network(specs)
+    select_projects(network, specs["m"])
