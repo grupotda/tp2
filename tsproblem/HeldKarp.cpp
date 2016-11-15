@@ -25,23 +25,32 @@ vector<int> remove_from(vector<int> s, int u){
 }
 
 HeldKarp::HeldKarp(vector<vector<int> > c, int v){
+	//Acá restamos uno, para que el índice 0 corresponda al vértice 1, el 1 al 2, etc...
+	v = v - 1;
 	vector<int> s;
-	for(int j = 1; j < c.size(); j++){
-		s.push_back(j);
+	for(int j = 0; j < c.size(); j++){
+		if(j != v){
+			s.push_back(j);
+		}
 	}
 	this->c = c;
-	pair<vector<pair<int,int> >, int> path_cost = held_karp(v,s);
+	pair<vector<int>, int> path_cost = held_karp(v,s);
 	this->m_path = path_cost.first;
+	//Sumamos uno a cada vértice para que nos dé la solución como queremos
+	for(int j = 0; j < m_path.size(); j++){
+		m_path[j]++;
+	}
 	this->m_cost = path_cost.second;
 }
 
-pair<vector<pair<int, int> >, int> HeldKarp::held_karp(int v, vector<int> s)
+pair<vector<int>, int> HeldKarp::held_karp(int v, vector<int> s)
 {
-    vector<pair<int, int> > path;
+    vector<int> path;
 	
 	// Si S = {}, el camino es sólo la arista desde el origen (el 0) a este vértice
     if (s.size() == 0) {
-        path.push_back(make_pair(0,v));
+        path.push_back(0);
+		path.push_back(v);
         return make_pair(path, c[0][v]);
     }
     int min = INT_MAX;
@@ -55,7 +64,7 @@ pair<vector<pair<int, int> >, int> HeldKarp::held_karp(int v, vector<int> s)
 		// Armamos S - {u}	
 		vector<int> new_s = remove_from(s,u);
 
-        pair<vector<pair<int, int> >, int> path_cost;
+        pair<vector<int>, int> path_cost;
 		
 		pair<int, vector<int> > u_new_s_pair = make_pair(u,new_s);
 
@@ -74,11 +83,11 @@ pair<vector<pair<int, int> >, int> HeldKarp::held_karp(int v, vector<int> s)
 
         if (cost < min) {
 			// Nos quedamos con el mínimo
-		    path = vector<pair<int, int> >();
+		    path = vector<int>();
 			// Agregamos el camino hasta u
             path = path_cost.first;
 			// Y la arista desde u hasta este vértice
-            path.push_back(make_pair(u, v));
+            path.push_back(v);
             min = cost;
         }
     }

@@ -46,34 +46,30 @@ vector < vector <int > > loadMatrix(char* filename){
 	return m;
 }
 
-int main(int argc, char* argv[])
-{	
-
-for(int i = 1; i < argc; i++){
+int main(int argc, char* argv[]){	
+	for(int i = 1; i < argc; i++){
 		cout << " - " << argv[i] << " - "<< endl;
 		vector< vector<int> > m = loadMatrix(argv[i]);
-		vector<int> s;
-		for(int j = 1; j < m.size(); j++){
-			s.push_back(j);
-		}
+		
 		high_resolution_clock::time_point t1 = high_resolution_clock::now();
-		HeldKarp hk (m,0);
-		vector< pair < int, int> > path = hk.path();
+		
+		//Salimos del vértice 1, los vértices son 1,2,3,...,N
+		HeldKarp hk (m,1);
+		vector<int> path = hk.path();
 		int cost = hk.cost();
-		cout << "cost is: " << cost << endl;
+
+		cout << "path: " << endl;
+		for (int k = 0; k < path.size(); k++){
+			cout << path[k] << endl;
+		}
+
+		cout << "cost: " << cost << endl;
+
 		high_resolution_clock::time_point t2 = high_resolution_clock::now();
 		auto duration = duration_cast<milliseconds>( t2 - t1 ).count();
 
-		cout << duration << std::endl;
+		cout << "time: " << duration << std::endl;
 
-//		vector<pair<int, int> > path = result.first;
-		//cout << "path: " << endl;
-//		for(int j = 0; j < path.size(); j++){
-//			cout << path[j].first + 1 << endl;
-//		}
-//		cout << path[path.size()-1].second + 1 << endl;
-//		cout << endl;
-//		cout << "cost: " << result.second << endl; 
 	}
 }
 
