@@ -1,2 +1,2 @@
 all:
-	g++ --std=c++11 tsp.cpp -o tsp
+	g++ --std=c++11 HeldKarp.cpp tsp.cpp -o tsp
