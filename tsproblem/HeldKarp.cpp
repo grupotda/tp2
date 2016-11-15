@@ -81,7 +81,6 @@ pair<vector<int>, int> HeldKarp::held_karp(int v, vector<int> s) {
 
         if (cost < min) {
             // Nos quedamos con el mínimo
-            path = vector<int>();
             // Agregamos el camino hasta u
             path = path_cost.first;
             // Y la arista desde u hasta este vértice
