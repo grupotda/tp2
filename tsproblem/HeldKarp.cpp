@@ -27,6 +27,7 @@ vector<int> remove_from(vector<int> s, int u) {
 HeldKarp::HeldKarp(vector<vector<int> > c, int v) {
     //Acá restamos uno, para que el índice 0 corresponda al vértice 1, el 1 al 2, etc...
     v = v - 1;
+	this->v = v;
     vector<int> s;
     for (int j = 0; j < c.size(); j++) {
         if (j != v) {
@@ -48,9 +49,9 @@ pair<vector<int>, int> HeldKarp::held_karp(int v, vector<int> s) {
 
     // Si S = {}, el camino es sólo la arista desde el origen (el 0) a este vértice
     if (s.size() == 0) {
-        path.push_back(0);
+        path.push_back(this->v);
         path.push_back(v);
-        return make_pair(path, c[0][v]);
+        return make_pair(path, c[this->v][v]);
     }
     int min = INT_MAX;
     int cost = 0;

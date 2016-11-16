@@ -20,6 +20,7 @@ private:
     vector<vector<int> > c;
     vector<int> m_path;
     int m_cost;
+	int v;
     map<pair<int, vector<int> >, pair<vector<int>, int> > previous;
 
     pair<vector<int>, int> held_karp(int v, vector<int> s);
