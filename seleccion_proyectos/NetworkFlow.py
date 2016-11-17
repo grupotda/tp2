@@ -26,7 +26,10 @@ class NetworkFlow(Digraph):
         :param weight: el peso asociado a la arista.
         """
         if dst >= self.V(): raise IndexError("Vertice desconocido")
-        self.vertices[src].append(Residual_edge(src, dst, weight))
+        edge = ResidualEdge(src, dst, weight)
+        back_edge = ResidualEdge(dst, src, weight, edge)
+        self.vertices[src].append(edge)
+        self.vertices[dst].append(back_edge)
 
     def _augment(self, path_to_sink, travel):
         min_flow = self._bottleneck(path_to_sink, travel)
@@ -40,12 +43,7 @@ class NetworkFlow(Digraph):
             :param path: objeto Path
             :param travel: aristas del camino
         """
-        min_capacidad = float("inf")
-        for arista in travel:
-            capacidad_arista_actual = arista.capacity()
-            if capacidad_arista_actual < min_capacidad:
-                min_capacidad = capacidad_arista_actual
-        return min_capacidad
+        return min(arista.capacity() for arista in travel)
 
     def calc_max_flow(self):
         path_to_sink = Bfs(self, self.source, self.sink)
@@ -61,10 +59,9 @@ class NetworkFlow(Digraph):
         self.flow()
 
         self.a.add(self.source)
-        for v in range(self.V()):
-            search_v = Bfs(self, self.source, v)
-            path = search_v.path(v)
-            if path:
+        bfs = Bfs(self, self.source, self.sink)
+        for v in xrange(self.V()):
+            if bfs.visited(v):
                 self.a.add(v)
             else:
                 self.b.add(v)
@@ -74,14 +71,23 @@ class NetworkFlow(Digraph):
         self.calc_max_flow()
         return self.f
 
-class Residual_edge(Edge):
-    def __init__(self, src, dst, c):
-        Edge.__init__(self,src,dst,c)
-        self.flow = 0
+
+class ResidualEdge(Edge):
+
+    def __init__(self, src, dst, c, asoc_edge=None):
+        Edge.__init__(self, src, dst, c)
+        if asoc_edge:
+            self.flow = c
+            self.back_edge = asoc_edge
+            asoc_edge.back_edge = self
+        else:
+            self.flow = 0
+            self.back_edge = None
 
     def actualizar_flujo(self, value):
         '''Actualiza el flujo que pasa por la arista'''
         self.flow += value
+        self.back_edge.flow -= value
 
     def capacity(self):
         return self.weight - self.flow
