@@ -1,18 +1,24 @@
 from NetworkFlow import NetworkFlow
 import sys
 
-def select_projects(network, projects):
+def select_projects(network, specs):
     """
         Selecciona los proyectos y expertos que son solucion del problema y los
         imprime por consola.
         :param NetworkFlow: grafo que modela el problema
-        :param int: numero de nodos que son ademas proyectos
+        :param specs: especificaciones del problema
     """
-    a = network.classify_vertices()[0]
-    projects = set(range(1, projects + 1))
+    a, b = network.classify_vertices()
     a.remove(0)
-    print "Deben seleccionarse los proyectos:", ', '.join(str(p) for p in a.intersection(projects))
-    print "Para lo cual deben contratarse expertos en las areas:", ', '.join(str(e-len(projects)) for e in a - a.intersection(projects))
+    selected_projects = a.intersection(set(range(1, specs["m"] + 1)))
+    selected_areas = a - selected_projects
+    income_projects = sum(specs["g"][p-1] for p in selected_projects)
+    cost_areas = sum(specs["c"][e-specs["m"]-1] for e in selected_areas)
+    print "Deben seleccionarse los proyectos:", ', '.join(str(p) for p in selected_projects)
+    print "Los cuales hacen ingresar:", income_projects
+    print "Para lo cual deben contratarse expertos en las areas:", ', '.join(str(e-specs["m"]) for e in selected_areas)
+    print "Los cuales cuestan:", cost_areas
+    print "Dandonos un resultado total de:", income_projects - cost_areas
 
 def build_network(specs):
     """
@@ -66,10 +72,8 @@ def read_file(file):
 
     gains = []
     requisites = []
-    for i in range(m):
-        line = f.readline().split(' ')
-        for i in range(len(line)):
-            line[i] = int(line[i])
+    for _ in range(m):
+        line = [int(x) for x in f.readline().split(' ')]
         gains.append(line.pop(0))
         requisites.append(line)
     specs["g"] = gains
@@ -85,4 +89,4 @@ else:
     f = str(sys.argv[1])
     specs = read_file(f)
     network = build_network(specs)
-    select_projects(network, specs["m"])
+    select_projects(network, specs)
