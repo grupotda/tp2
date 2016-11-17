@@ -1,4 +1,6 @@
 from NetworkFlow import NetworkFlow
+
+
 def test():
     NetworkA = NetworkFlow(6)
     edges = [(0,1,16),(0,2,13),(1,2,10),(2,1,4),(1,3,12),(2,4,14),(3,2,9),(4,3,7),(3,5,20),(4,5,4)]
@@ -18,4 +20,12 @@ def test():
         NetworkB.add_edge(edge[src],edge[dst],edge[w])
     flow = NetworkB.flow()
     print "Flujo de la segunda red calculado correctamente.. "+str(flow == 19)
+    
+    NetworkC = NetworkFlow(6)
+    edges_c = [(0,1,8),(1,4,10),(4,5,8),(0,2,10),(2,5,5),(0,3,5),(3,5,10),(1,2,3),(1,3,3),(2,4,3),(3,4,3)]
+    for edge in edges_c:
+        NetworkC.add_edge(edge[src],edge[dst],edge[w])
+    flow = NetworkC.flow()
+    print "El flujo deberia ser 21, es", flow, ":", flow == 21
+
 test()
