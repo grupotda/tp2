@@ -18,7 +18,7 @@ class Bfs(Path):
         while q and not self.tagged[self.dst]:
             vertex = q.popleft()
             for edge in self.graph.adj_e(vertex):
-                if not self.tagged[edge.dst] and edge.capacity() > 0:
+                if not self.tagged[edge.dst]:
                     
                     q.append(edge.dst)
                     self.edge_to[edge.dst] = edge
