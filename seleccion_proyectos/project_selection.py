@@ -1,11 +1,13 @@
-from NetworkFlow import NetworkFlow
+#!/usr/bin/python
+#  -*- coding: utf-8 -*-
+from flow_network import FlowNetwork
 import sys
 
+
 def select_projects(network, specs):
-    """
-        Selecciona los proyectos y expertos que son solucion del problema y los
+    """ Selecciona los proyectos y expertos que son solucion del problema y los
         imprime por consola.
-        :param NetworkFlow: grafo que modela el problema
+        :param network: FlowNetwork que modela el problema
         :param specs: especificaciones del problema
     """
     a, b = network.classify_vertices()
@@ -20,11 +22,11 @@ def select_projects(network, specs):
     print "Los cuales cuestan:", cost_areas
     print "Dandonos un resultado total de:", income_projects - cost_areas
 
+
 def build_network(specs):
-    """
-        Devuelve el grafo que modela el problema de manera tal que su corte
+    """ Devuelve el grafo que modela el problema de manera tal que su corte
         minimo nos devuelva la solucion.
-        :param dict: especificaciones del problema
+        :param specs: especificaciones del problema
     """
     areas = specs["n"]
     projects = specs["m"]
@@ -32,7 +34,7 @@ def build_network(specs):
     gains = specs["g"]
     requisites = specs["r"]
 
-    network = NetworkFlow(areas + projects + 2) # n + m + source + sink
+    network = FlowNetwork(areas + projects + 2) # n + m + source + sink
     # Convencion:
     #   - vertice 0: fuente
     #   - vertices 1 a m: proyectos
@@ -53,8 +55,7 @@ def build_network(specs):
 
 
 def read_file(file):
-    """
-        Devuelve un diccionario con las especificaciones del problema a resolver.
+    """ Devuelve un diccionario con las especificaciones del problema a resolver.
         La funcion no hace chequeos. Supone que el archivo es valido.
         :param file: nombre del archivo con las especificaciones del problema
     """
@@ -83,10 +84,11 @@ def read_file(file):
 
     return specs
 
-if len(sys.argv) < 2 or len(sys.argv) > 2:
-    print "Uso: project_selection.py <file>"
-else:
-    f = str(sys.argv[1])
-    specs = read_file(f)
-    network = build_network(specs)
-    select_projects(network, specs)
+if __name__ == "__main__":
+    if len(sys.argv) < 2 or len(sys.argv) > 2:
+        print "Uso: project_selection.py <file>"
+    else:
+        f = str(sys.argv[1])
+        specs = read_file(f)
+        network = build_network(specs)
+        select_projects(network, specs)

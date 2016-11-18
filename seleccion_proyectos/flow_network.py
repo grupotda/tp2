@@ -1,21 +1,24 @@
 #!/usr/bin/python
 #  -*- coding: utf-8 -*-
-
 from digraph import Digraph, Edge
 from bfs import Bfs
 from math import log, pow
 from itertools import chain
 
-class NetworkFlow(Digraph):
-    '''Reprensenta a una red de flujos'''
+
+class FlowNetwork(Digraph):
+    """ Representa a una red de flujo.
+        Se puede utilizar como un digrafo normal.
+        Condiciones de la red:
+            - El primer vertice (0) sera la fuente (s)
+            - El ultimo vertice (V-1) sera el sumidero (t)
+    """
 
     def __init__(self, V):
-        """Pre: La fuente sera el primer vertice
-                El sumidero sera el ultimo vertice
-        """
+        """ Construye una red sin aristas de V vertices. """
         Digraph.__init__(self, V)
         self.back_vertices = [[] for _ in xrange(V)]
-        self.min_capacity = 1  # Scaling Parameter
+        self.min_capacity = 1  # Scaling Parameter (delta)
         self.source = 0
         self.sink = V - 1
         self.flow = 0
@@ -28,8 +31,8 @@ class NetworkFlow(Digraph):
         :param capacity: la capacidad de la arista.
         """
         if dst >= self.V(): raise IndexError("Vertice desconocido")
-        edge = ResidualEdge(src, dst, capacity)
-        back_edge = ResidualEdge(dst, src, capacity, edge)
+        edge = FlowEdge(src, dst, capacity)
+        back_edge = FlowEdge(dst, src, capacity, edge)
         self.vertices[src].append(edge)
         self.back_vertices[dst].append(back_edge)
 
@@ -41,7 +44,7 @@ class NetworkFlow(Digraph):
     def _augment(self, path):
         """ Aumenta el flujo en lo maximo posible en el camino.
             Devuelve lo aumentado.
-            :param path: iterable de ResidualEdge
+            :param path: iterable de FlowEdge
         """
         max_augment = self._bottleneck(path)
         for edge in path:
@@ -50,7 +53,7 @@ class NetworkFlow(Digraph):
 
     def _bottleneck(self, path):
         """ Devuelve la menor capacidad del camino.
-            :param path: iterable de ResidualEdge
+            :param path: iterable de FlowEdge
         """
         return min(edge.capacity() for edge in path)
 
@@ -78,6 +81,9 @@ class NetworkFlow(Digraph):
         self.adj_e = old_adj_e_method
 
     def classify_vertices(self):
+        """ Calcula el corte minimo s-t.
+            Devuelve 2 sets de vertices correspondientes a cada parte.
+        """
         self._calc_max_flow()
 
         # Asigno el metodo restringido por capacidad al metodo que usa bfs
@@ -101,16 +107,26 @@ class NetworkFlow(Digraph):
         return a, b
 
     def max_flow(self):
+        """ Calcula y devuelve el flujo maximo de la red. """
         self._calc_max_flow()
         return self.flow
 
 
-class ResidualEdge(Edge):
+class FlowEdge(Edge):
+    """ Arista que trabaja con flujo.
+        El peso de la arista es su capacidad total.
+        Condicion: Crear siempre de a pares para generar grafo residual.
+    """
 
-    def __init__(self, src, dst, c, asoc_edge=None):
-        Edge.__init__(self, src, dst, c)
+    def __init__(self, src, dst, cap, asoc_edge=None):
+        """ Se construye una arista con flujo inicial 0.
+            Si se especifica la arista, se asocia con la recien construida.
+            La recien construida se considera la "residual".
+            Cond: src y dst deben ser los invertidos de la arista asociada.
+        """
+        Edge.__init__(self, src, dst, cap)
         if asoc_edge:
-            self.flow = c
+            self.flow = cap
             self.back_edge = asoc_edge
             asoc_edge.back_edge = self
         else:
