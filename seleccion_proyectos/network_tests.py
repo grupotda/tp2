@@ -10,7 +10,7 @@ def test():
     w = 2
     for edge in edges:
         NetworkA.add_edge(edge[src],edge[dst],edge[w])
-    flow = NetworkA.flow()
+    flow = NetworkA.max_flow()
     print "Flujo de la primera red calculado correctamente.. "+str(flow == 23)
 
     NetworkB = NetworkFlow(6)
@@ -18,14 +18,14 @@ def test():
     edges_b =[(0,1,10),(0,2,10),(1,2,2),(1,3,4),(1,4,8),(2,4,9),(4,3,6),(3,5,10),(4,5,10)]
     for edge in edges_b:
         NetworkB.add_edge(edge[src],edge[dst],edge[w])
-    flow = NetworkB.flow()
+    flow = NetworkB.max_flow()
     print "Flujo de la segunda red calculado correctamente.. "+str(flow == 19)
     
     NetworkC = NetworkFlow(6)
     edges_c = [(0,1,8),(1,4,10),(4,5,8),(0,2,10),(2,5,5),(0,3,5),(3,5,10),(1,2,3),(1,3,3),(2,4,3),(3,4,3)]
     for edge in edges_c:
         NetworkC.add_edge(edge[src],edge[dst],edge[w])
-    flow = NetworkC.flow()
+    flow = NetworkC.max_flow()
     print "El flujo deberia ser 21, es", flow, ":", flow == 21
 
 test()

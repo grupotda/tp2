@@ -39,7 +39,7 @@ def build_network(specs):
     #   - vertices m + 1 a m + n: areas
     #   - vertice -1 (m + n + 1): sumidero
 
-    limit = sum(costs)
+    limit = sum(costs) + 1
 
     for p in range(projects):
         network.add_edge(0, p + 1, gains[p])
