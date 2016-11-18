@@ -16,7 +16,7 @@ class Edge:
         self.src = src
         self.dst = dst
         self.weight = weight
-        
+
     def __str__(self):
         return "%d-%d->%d" % (self.src, self.weight, self.dst)
 
@@ -93,4 +93,5 @@ class Digraph:
         for aristas in self.vertices:
             for edge in aristas:
                 yield edge
+
 
